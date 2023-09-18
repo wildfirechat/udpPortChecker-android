@@ -45,6 +45,7 @@ import cn.wildfirechat.wfchecker.ui.theme.WFCheckerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.InetAddress
 import java.util.regex.Pattern
 
 class MainActivity : ComponentActivity() {
@@ -186,15 +187,14 @@ fun GreetingPreview() {
 }
 
 fun isValidHost(hostname: String): Boolean {
-    // 定义主机名的正则表达式
-    val pattern = Pattern.compile(
-        "^(?=.{1,255}\$)([A-Za-z0-9_-]+\\.)*[A-Za-z0-9][A-Za-z0-9_-]*\\.([A-Za-z]{2,})\$",
-        Pattern.CASE_INSENSITIVE
-    )
-
-    // 使用正则表达式验证主机名
-    val matcher = pattern.matcher(hostname)
-    return matcher.matches()
+    try {
+        // 尝试解析主机名或 IP 地址
+        InetAddress.getByName(hostname.trim())
+        return true
+    } catch (e: Exception) {
+        // 如果出现异常，则表示不是合法的主机名或 IP 地址
+        return false
+    }
 }
 
 fun isPositiveInteger(str: String): Boolean {
